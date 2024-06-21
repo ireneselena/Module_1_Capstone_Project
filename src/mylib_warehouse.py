@@ -122,14 +122,17 @@ def categoryselection():
     1. Home Improvement
     2. Materials
     3. Tools
-    4. Etc"""
+    4. Gardening
+    5. Furniture
+    6. Cleaning
+    7. Etc"""
 
     while True: 
         # show category list menu to user
         print(categoryList)
 
         # Ask user to input category selection number
-        catSelection = integer_validation(title = "Input category number here: ", minval = 1, maxval = 4)
+        catSelection = integer_validation(title = "Input category number here: ", minval = 1, maxval = 7)
 
         if catSelection == 1:
             category = "Home Improvement"
@@ -139,6 +142,15 @@ def categoryselection():
             break
         elif catSelection == 3:
             category = "Tools"
+            break
+        elif catSelection == 4:
+            category = "Gardening"
+            break
+        elif catSelection == 5:
+            category = "Furniture"
+            break
+        elif catSelection == 6:
+            category = "Cleaning"
             break
         else:
             category = "Etc"
