@@ -37,6 +37,28 @@ def alnum_validation(title):
     return alnumText.upper()
 
 
+# A function used to check if the user input contains only alphabet and spaces
+def item_name_validation(title):
+    while True:
+        itemName = input(title)
+        if all(char.isalpha() or char.isspace() for char in itemName):
+            break
+        else:
+            print("Please input only alphabets and spaces!")
+    return itemName.title()
+
+
+# A function used to check if the user input contains only alphabet, numbers, and spaces
+def brand_name_validation(title):
+    while True:
+        brandName = input(title)
+        if all(char.isalpha() or char.isspace() or char.isnumeric() for char in brandName):
+            break
+        else:
+            print("Please input only alphabets and spaces!")
+    return brandName.title()
+
+
 # A function used to show database values in table format using tabulate
 def showAll(database, header=["SKU_id", "Name", "Stock", "Brand", "Category"]):
     # Show data in table format
@@ -145,9 +167,9 @@ def add(database):
 
             if sku_id not in database:
                 # If sku_id is not in database
-                itemName = string_validation('Enter item name: ')
+                itemName = item_name_validation('Enter item name: ')
                 stock = integer_validation('Enter stock quantity: ')
-                brand = string_validation('Eenter brand name: ')
+                brand = brand_name_validation('Enter brand name: ')
                 category = categoryselection()
 
                 # Create a new item dictionary
@@ -192,9 +214,9 @@ def updateInfo(database):
 
             if sku_id in database:
                 # If sku_id is in database
-                itemName = string_validation('Enter item name: ')
+                itemName = item_name_validation('Enter item name: ')
                 stock = integer_validation('Enter stock quantity: ')
-                brand = string_validation('Eenter brand name: ')
+                brand = brand_name_validation('Eenter brand name: ')
                 category = categoryselection()
 
                 # Create a new item dictionary
