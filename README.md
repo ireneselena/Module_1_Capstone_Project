@@ -4,7 +4,7 @@
 
 The Warehouse Inventory Management System is designed to streamline and enhance inventory control for hardware and home improvement stores. Developed to empower warehouse supervisors and business owners, this application facilitates efficient stock management and operational oversight. This Warehouse Inventory Management System aims to optimize business operations by providing comprehensive tools for inventory management and supplier communication.
 
-# Key Features:
+### Key Features:
 
 1. **Show Warehouse Inventory**: View detailed inventory listings, including options to filter by product category or specific SKU_id.
 
