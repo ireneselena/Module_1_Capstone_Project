@@ -38,7 +38,7 @@ def alnum_validation(title):
 
 
 # A function used to check if the user input contains only alphabet and spaces
-def item_name_validation(title):
+def alphaspace_validation(title):
     while True:
         itemName = input(title)
         if all(char.isalpha() or char.isspace() for char in itemName):
@@ -49,7 +49,7 @@ def item_name_validation(title):
 
 
 # A function used to check if the user input contains only alphabet, numbers, and spaces
-def brand_name_validation(title):
+def alnumspace_validation(title):
     while True:
         brandName = input(title)
         if all(char.isalpha() or char.isspace() or char.isnumeric() for char in brandName):
@@ -57,6 +57,16 @@ def brand_name_validation(title):
         else:
             print("Please input only alphabets and spaces!")
     return brandName.title()
+
+
+def email_validation(title):
+    while True:
+        email = input(title)
+        if all(char.isalnum() or char == '.' or char == '@' for char in email):
+            break
+        else:
+            print("Please input a valid email address (only alphabets, numbers, '.', and '@' are allowed)!")
+    return email.lower()
 
 
 # A function used to show database values in table format using tabulate
@@ -70,7 +80,7 @@ def showCat(database, category, header=['SKU_id', 'Name', 'Stock', 'Brand', 'Cat
     foundItems = []
     for key, val in database.items():
         if val[4].lower()== category.lower():
-            foundItems.append(val)
+            foundItems.append(val[:5])
     if foundItems == []:
         print(f'''\n No items were found in category {category}''')
     else:
@@ -78,7 +88,7 @@ def showCat(database, category, header=['SKU_id', 'Name', 'Stock', 'Brand', 'Cat
 
 
 # A function used to show a particular item based on its SKU_id
-def showItem(database, sku_id, header=["SKU_id", "Name", "Stock", "Brand", "Category"]):
+def showItem(database, sku_id, header=["SKU_id", "Name", "Stock", "Brand", "Category", 'Supplier_id']):
     if sku_id in database:
         print(tabulate([database[sku_id]], headers = header, tablefmt="mixed_grid"))
     else:
@@ -101,7 +111,12 @@ def show(database):
         showData = integer_validation("Please input the option you want to select: ", minval = 1, maxval = 4)
         if showData == 1:
             # Show all data
-            showAll(database)
+            showInvent = {}
+            for key, val in database.items():
+                showInvent[key] = val[0:5]
+            
+            showAll(showInvent)
+
         elif showData == 2:
             # Ask for category
             category = categoryselection()
@@ -185,16 +200,17 @@ def add(database):
 
             if sku_id not in database:
                 # If sku_id is not in database
-                itemName = item_name_validation('Enter item name: ')
+                itemName = alphaspace_validation('Enter item name: ')
                 stock = integer_validation('Enter stock quantity: ')
-                brand = brand_name_validation('Enter brand name: ')
+                brand = alnumspace_validation('Enter brand name: ')
                 category = categoryselection()
+                supplierid = integer_validation('Enter supplier id: ')
 
                 # Create a new item dictionary
-                new_item= [sku_id, itemName, stock, brand, category]
+                new_item= [sku_id, itemName, stock, brand, category, supplierid]
                 databaseTemp = {}
                 databaseTemp[sku_id] = new_item
-                showAll(databaseTemp)
+                showAll(databaseTemp, header=["SKU_id", "Name", "Stock", "Brand", "Category", "Supplier_id"])
                 saveData = integer_validation(f'''\n Do you want to save data? 
     1. Yes
     2. No
@@ -228,19 +244,19 @@ def stockInfo(database):
         if showData == 1:
             stockDB = {}
             for key, val in database.items():
-                stockDB[key] = [val[0], val[2]]
+                stockDB[key] = [val[0], val[2], val[5]]
             
-            showAll(stockDB, header=["SKU_id", "Stock"])
+            showAll(stockDB, header=["SKU_id", "Stock", "Supplier_id"])
             
         elif showData == 2:
             stockDB = {}
             for key, val in database.items():
-                if val[2] <= 10:
-                    stockDB[key] = [val[0], val[2]]
+                if val[2] <= 15:
+                    stockDB[key] = [val[0], val[2], val[5]]
                 else:
                     continue
             
-            showAll(stockDB, header=['SKU_id', 'Stock'])
+            showAll(stockDB, header=["SKU_id", "Stock", "Supplier_id"])
 
         elif showData == 3:
             break
@@ -267,13 +283,14 @@ def updateInfo(database):
 
             if sku_id in database:
                 # If sku_id is in database
-                itemName = item_name_validation('Enter item name: ')
+                itemName = alphaspace_validation('Enter item name: ')
                 stock = integer_validation('Enter stock quantity: ')
-                brand = brand_name_validation('Eenter brand name: ')
+                brand = alnumspace_validation('Enter brand name: ')
                 category = categoryselection()
+                supplier = integer_validation('Enter supplier id: ')
 
                 # Create a new item dictionary
-                update_item= [sku_id, itemName, stock, brand, category]
+                update_item= [sku_id, itemName, stock, brand, category, supplier]
                 databaseTemp2 = {}
                 databaseTemp2[sku_id] = update_item
                 showAll(databaseTemp2)
@@ -328,3 +345,170 @@ def delete(database):
 
         elif showData4 == 2:
             break
+
+
+# A function to show suppliers information
+def supplier(database1, database2):
+    menulistsupplier = '''
+    Supplier Information
+    
+    1. Show All Suppliers Contact Information
+    2. Show Based on Supplier ID
+    3. Add Supplier Contact Information
+    4. Update Supplier Contact Information
+    5. Delete Supplier Contact Information
+    6. Back to Main Menu'''
+
+    while True:
+        print(menulistsupplier)
+        suppOption = integer_validation("Please input the option you want to select: ", minval = 1, maxval = 6)
+        if suppOption == 1:
+            # Show all supplier information data        
+            showAll(database2, header= ['Supplier_id', 'Name', 'Contact_Person', 'Email', 'Country'])
+
+        elif suppOption == 2:
+            # Ask for supplier id
+            suppId = integer_validation('Please input Supplier ID here: ', minval=0, maxval=(len(database2)-1))
+            if suppId in database2:
+                print(tabulate([database2[suppId]], headers =['Supplier_id', 'Name', 'Contact_Person', 'Email', 'Country'], tablefmt="mixed_grid"))
+            else:
+                print(f'\n Supplier with ID : {suppId} was not found in Supplier Information Data')
+
+        elif suppOption == 3:
+            # Choose add options
+            submenu = '''
+    Add New Supplier Contact Information?
+    
+    1. Add Data
+    2. Back to Previous Menu'''
+
+            while True:
+                print(submenu)
+                submenuopt = integer_validation("Please input the option you want to select: ", minval = 1, maxval = 2)
+                if submenuopt == 1:
+                    # Ask user for supplier id 
+                    supplier_id = integer_validation('please input supplier id: ')
+                    if supplier_id in database2:
+                        print('''\n Item already existed, please try again!''')
+                    
+                    elif supplier_id not in database2:
+                        # If supplier_id is not in database
+                        name = alphaspace_validation("Enter supplier's name: ")
+                        contactPerson = alphaspace_validation("Enter contact person's name: ")
+                        email = email_validation("Enter supplier's email: ")
+                        country = alphaspace_validation("Enter supplier's country: ")
+
+                        # Create a new item dictionary
+                        new_supp= [supplier_id, name, contactPerson, email, country]
+                        databaseTemp = {}
+                        databaseTemp[supplier_id] = new_supp
+                        showAll(databaseTemp, header =['Supplier_id', 'Name', 'Contact_Person', 'Email', 'Country'])
+                        saveData = integer_validation(f'''\n Do you want to save data? 
+    1. Yes
+    2. No
+    input:   ''', minval = 1, maxval = 2)
+                        if saveData == 1:
+                            # Add new supplier contact information to database
+                            database2[supplier_id] = new_supp
+
+                            print(f'\n Supplier with supplier id {supplier_id} have beem added successfully.')
+                            break
+                        else:
+                            supplier(database2)
+
+                elif submenuopt == 2:
+                    break 
+
+        elif suppOption == 4:
+            # Update Supplier details
+            updateSupp = '''
+    Update Supplier Details?
+    
+    1. Update Supplier Details
+    2. Back to Main Menu'''
+
+            while True:
+                print(updateSupp)
+                optionUpdate = integer_validation("Please input the option you want to select: ", minval = 1, maxval = 2)
+                if optionUpdate == 1:
+                    # Ask user for supplier_id
+                    supp_id = integer_validation('please input supplier id: ')
+                    if supp_id not in database2:
+                        print('\n Supplier data does not exist, please try again!')
+
+                    elif supp_id in database2:
+                        # If supplier_id is in database
+                        name = alphaspace_validation("Enter supplier's name: ")
+                        contactPerson = alphaspace_validation("Enter contact person's name: ")
+                        email = email_validation("Enter supplier's email: ")
+                        country = alphaspace_validation("Enter supplier's country: ")
+
+                        # Create a new item dictionary
+                        update_item= [supp_id, name, contactPerson, email, country]
+                        updateDB = {}
+                        updateDB[supp_id] = update_item
+                        showAll(updateDB, headers =['Supplier_id', 'Name', 'Contact_Person', 'Email', 'Country'])
+                        updateData = integer_validation(f'''\n Do you want to update data? 
+            1. Yes
+            2. No
+            input:   ''', minval = 1, maxval = 2)
+                        if updateData == 1:
+                            # Add updated item to database
+                            database2[supp_id] = update_item
+
+                            print(f'\n Supplier data with id {supp_id} have been updated successfully.')
+                            break
+                        else:
+                            supplier(database1, database2)
+
+                elif optionUpdate == 2:
+                    break
+
+        elif suppOption == 5:
+            delmenu = '''Delete Supplier's Information?
+
+    1. Delete Supplier Info
+    2. Back to Previous Menu'''
+
+            while True:
+                print(delmenu)
+                delOpt = integer_validation("Please input the option you want to choose: ", minval=1, maxval=2)
+                if delOpt == 1:
+                    # Ask user for supplier id
+                    suppid = integer_validation('Please input Supplier id that you want to delete: ')
+                    if suppid not in database2:
+                        print(f'\n Supplier information does not exist, please try again!')
+                    
+                    elif suppid in database2:
+                        status = ''
+                        for key, val in database1.items():
+                            if suppid != val[5]:
+                                status = 'No'
+                            elif suppid == val[5]:
+                                print(f'\n Supplier information is still being use, cannot delete supplier info!')
+                                status = 'Yes'
+                                break
+                           
+                        if status == 'No':
+                            deleteDB = {}
+                            deleteDB[suppid] = database2[suppid]
+                            showAll(deleteDB, header =['Supplier_id', 'Name', 'Contact_Person', 'Email', 'Country'])
+                            deletesupp = integer_validation(f'''\n Do you want to delete supplier data?
+            
+            1. Yes
+            2. No   ''', minval = 1, maxval = 2                                          )
+    
+                            if deletesupp == 1:
+                                del database2[suppid]
+                                print(f'\n Supplier data with id {suppid} have been deleted successfully.')
+                                break
+                            else:
+                                supplier(database1, database2)
+
+                elif delOpt == 2:
+                    break
+
+        else:
+            break
+
+

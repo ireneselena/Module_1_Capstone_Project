@@ -1,20 +1,20 @@
-HI01;White Paint;50;Nippon;Home Improvement
-M01;Wooden Plank;100;Lumber;Materials
-T01;Electric Drill;75;Krisbow;Tools
-T03;Hand Saw;19;Tactix;Tools
-HI02;Floor Mat;15;Krisfloor;Home Improvement
-G01;Fertilizer;55;Petro;Gardening
-M02;Concrete Mix;12;Strong;Materials
-G02;Sun Flower Seed;17;Lets Plant;Gardening
-HI03;Black Paint;39;Nippon;Home Improvement
-F01;Dining Table;3;Ataru;Furniture
-M03;Glass Pane;86;Clear;Materials
-C01;Bleach;32;Tide;Cleaning
-F02;Lounge Chair;23;Create;Furniture
-HI04;Wallpaper;55;Brics;Home Improvement
-HI05;Violet Paint;10;Avian;Home Improvement
-C02;All Purpose Cleaner;15;Cool;Cleaning
-T04;Big Nails;100;Shar;Tools
-HI06;Extendable Ladder;8;Ace;Home Improvement
-C03;Microfiber Cloth;66;Soo;Cleaning
-T02;Hammer;45;Thor;Tools
+HI01;White Paint;50;Nippon;Home Improvement;1
+M01;Wooden Plank;100;Lumber;Materials;2
+T01;Electric Drill;75;Krisbow;Tools;3
+T03;Hand Saw;19;Tactix;Tools;3
+HI02;Floor Mat;15;Krisfloor;Home Improvement;4
+G01;Fertilizer;55;Petro;Gardening;5
+M02;Concrete Mix;12;Strong;Materials;2
+G02;Sun Flower Seed;17;Lets Plant;Gardening;5
+HI03;Black Paint;39;Nippon;Home Improvement;1
+F01;Dining Table;3;Ataru;Furniture;4
+M03;Glass Pane;86;Clear;Materials;6
+C01;Bleach;32;Tide;Cleaning;7
+F02;Lounge Chair;23;Create;Furniture;4
+HI04;Wallpaper;55;Brics;Home Improvement;1
+HI05;Violet Paint;10;Avian;Home Improvement;8
+C02;All Purpose Cleaner;15;Cool;Cleaning;7
+T04;Big Nails;100;Shar;Tools;9
+HI06;Extendable Ladder;8;Ace;Home Improvement;10
+C03;Microfiber Cloth;66;Soo;Cleaning;7
+T02;Hammer;45;Thor;Tools;3
