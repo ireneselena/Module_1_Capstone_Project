@@ -174,8 +174,14 @@ def add(database):
             # Ask user for sku_id
             sku_id = alnum_validation('please input SKU id: ')
             if sku_id in database:
-                print('\n Item already existed, please try again!')
-                add(database)
+                option = integer_validation('''\n Item already existed, do you want to update item instead?
+    1. Yes
+    2. No 
+    option: ''')
+                if option == 1:
+                    updateInfo(database)
+                else:
+                    add(database)
 
             if sku_id not in database:
                 # If sku_id is not in database
@@ -204,6 +210,41 @@ def add(database):
 
         elif showData2 == 2:
             break
+
+
+# A function used to display stock info of items in warehouse
+def stockInfo(database):
+
+    menulist = '''
+    See product stock information ?
+    
+    1. Show all product stock information
+    2. Show items in low stock
+    3. Back to Main Menu'''
+
+    while True:
+        print(menulist)
+        showData = integer_validation("Please input the option you want to select: ", minval = 1, maxval = 3)
+        if showData == 1:
+            stockDB = {}
+            for key, val in database.items():
+                stockDB[key] = [val[0], val[2]]
+            
+            showAll(stockDB, header=["SKU_id", "Stock"])
+            
+        elif showData == 2:
+            stockDB = {}
+            for key, val in database.items():
+                if val[2] <= 10:
+                    stockDB[key] = [val[0], val[2]]
+                else:
+                    continue
+            
+            showAll(stockDB, header=['SKU_id', 'Stock'])
+
+        elif showData == 3:
+            break
+
 
 # A function used to update stock details to database
 def updateInfo(database):
