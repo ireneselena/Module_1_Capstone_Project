@@ -3,7 +3,7 @@ import os
 import sys
 import csv
 
-
+# Function to clear user's terminal screen when using the app
 def clear_screen():
       # For Windows
     if os.name == 'nt':
@@ -12,7 +12,7 @@ def clear_screen():
     else:
         _ = os.system('clear')
 
-
+# Define different paths for each database 
 PATH_WAREHOUSE = 'data/Warehouse_Inventory.csv'
 PATH_SUPPLIER = 'data/Supplier_Information.csv'
 
@@ -47,7 +47,7 @@ def initialize_db():
 
     return database1, database2
 
-
+# Main function
 def main():
 
     menulist = '''
@@ -72,36 +72,43 @@ def main():
         # Ask user to input a number from main menu list
         option = mylibw.integer_validation("Please input option you want to select: ", minval = 1, maxval = 7)
 
-        # Display function as the number inputted
+        # Run function as the number inputted
+        # Show Warehouse Inventory
         if option == 1:
             mylibw.show(database1)
-            
+
+        # Add Warehouse Inventory    
         elif option == 2:
             mylibw.add(database1)
 
+        # Show Stock Information
         elif option == 3:
             mylibw.stockInfo(database1)
 
+        # Update Item Information Details
         elif option == 4:
             mylibw.updateInfo(database1)
 
+        # Delete Item Inventory
         elif option == 5:
             mylibw.delete(database1)
 
+        # Show Supplier Information Menu
         elif option == 6:
             mylibw.supplier(database1, database2)
 
+        # Exit Program
         else:
             break
 
-         # Keeping database renewed
+         # Keeping warehouse inventory database renewed
         with open(PATH_WAREHOUSE, 'w') as file1:
             # Creating 'writer' variable
             writer1 = csv.writer(file1, delimiter=";")
             # Writing data into csv file
             writer1.writerows(database1.values())
 
-        # Keeping database renewed
+        # Keeping supplier information database renewed
         with open(PATH_SUPPLIER, 'w') as file2:
             # Creating 'writer' variable
             writer2 = csv.writer(file2, delimiter=";")
