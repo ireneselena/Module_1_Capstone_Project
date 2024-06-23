@@ -79,7 +79,7 @@ def main():
 
         # Add Warehouse Inventory    
         elif option == 2:
-            mylibw.add(database1)
+            mylibw.add(database1, database2)
 
         # Show Stock Information
         elif option == 3:
