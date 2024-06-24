@@ -56,11 +56,10 @@ def main():
     Menu Selection:
     1. Show Warehouse Inventory
     2. Add Warehouse Inventory
-    3. Show Stock Information
-    4. Update Item Information Details
-    5. Delete Item Inventory 
-    6. Show Supplier Information
-    7. Exit Program
+    3. Update Item Information Details
+    4. Delete Item Inventory 
+    5. Supplier Information
+    6. Exit Program
     '''
 
     global database1, database2
@@ -70,7 +69,7 @@ def main():
         print(menulist)
 
         # Ask user to input a number from main menu list
-        option = mylibw.integer_validation("Please input option you want to select: ", minval = 1, maxval = 7)
+        option = mylibw.integer_validation("Please input option you want to select: ", minval = 1, maxval = 6)
 
         # Run function as the number inputted
         # Show Warehouse Inventory
@@ -81,20 +80,17 @@ def main():
         elif option == 2:
             mylibw.add(database1, database2)
 
-        # Show Stock Information
-        elif option == 3:
-            mylibw.stockInfo(database1)
 
         # Update Item Information Details
-        elif option == 4:
+        elif option == 3:
             mylibw.updateInfo(database1)
 
         # Delete Item Inventory
-        elif option == 5:
+        elif option == 4:
             mylibw.delete(database1)
 
         # Show Supplier Information Menu
-        elif option == 6:
+        elif option == 5:
             mylibw.supplier(database1, database2)
 
         # Exit Program

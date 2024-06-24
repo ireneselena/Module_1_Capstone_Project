@@ -12,7 +12,7 @@ def string_validation(title):
 
 
 # A function used to check if the user input contains only number
-def integer_validation(title, minval=0, maxval=100):
+def integer_validation(title, minval=1, maxval=999):
     while True:
         number = (input(title))
         try:
@@ -106,13 +106,14 @@ def show(database):
     1. Show All Warehouse Inventory
     2. Show Based on Category
     3. Show Particular Item
-    4. Back to Main Menu'''
+    4. Show Stock Information
+    5. Back to Main Menu'''
 
     while True:
         # Display sub menu
         print(showmenu)
         # Ask user to input option
-        showData = integer_validation("Please input the option you want to select: ", minval = 1, maxval = 4)
+        showData = integer_validation("Please input the option you want to select: ", minval = 1, maxval = 5)
 
         # Show all warehouse inventory (Excluding supplier id column)
         if showData == 1:
@@ -120,8 +121,13 @@ def show(database):
             showInvent = {}
             for key, val in database.items():
                 showInvent[key] = val[0:5]
-            # Display data in table format
-            showAll(showInvent)
+
+            # If database is empty
+            if showInvent == {}:
+                print(f'''\n No items in database, database is empty''')
+            else:
+                # Display data in table format
+                showAll(showInvent)
 
         # Show warehouse inventory based on its category (Excluding supplier id column)
         elif showData == 2:
@@ -136,6 +142,11 @@ def show(database):
             sku_id = alnum_validation("Please input item's SKU id: ")
             # Display data in table format
             showItem(database, sku_id)
+
+        # Show Stock Information
+        elif showData == 4:
+            # Call stock information function
+            stockInfo(database)
 
         # Break loop to go back to main menu
         else:
@@ -218,6 +229,8 @@ def add(database1, database2):
                 else:
                     continue
 
+            # Create status variable for option processing
+            status = ''       
             if sku_id not in database1:
                 # If sku_id is not in database, ask user for product details
                 itemName = alphaspace_validation('Enter item name: ')
@@ -228,10 +241,29 @@ def add(database1, database2):
                 
                 # Check if supplier id already exist
                 if supplierid in database2:
-                    continue
+                     # Create a new item dictionary
+                    new_item= [sku_id, itemName, stock, brand, category, supplierid]
+                    databaseTemp = {}
+                    # Add new item to temporary database to confirm to user
+                    databaseTemp[sku_id] = new_item
+                    # Show temporary database to user
+                    showAll(databaseTemp, header=["SKU_id", "Name", "Stock", "Brand", "Category", "Supplier_id"])
+                    saveData = integer_validation(f'''\n Do you want to save data? 
+    1. Yes
+    2. No
+    input:   ''', minval = 1, maxval = 2)
+            
+                    if saveData == 1:
+                        # Add new item to database
+                        database1[sku_id] = new_item
+                        print(f'\n Item with SKU id {sku_id} have added successfully.')
+                        break
+                    # Go back to Add function sub menu
+                    else:
+                        continue
                 
                 # When supplier id does not exist, ask user to add supplier info
-                if supplierid not in database2:
+                elif supplierid not in database2:
                     while True:
                         askuser = integer_validation(f'''\nSupplier id has not been registered, do you want to add supplier's contact information first?
                                                      
@@ -272,30 +304,30 @@ def add(database1, database2):
                         elif askuser == 2:
                             break
                         
-                    if status == 'Yes':      
-                        # Create a new item dictionary
-                        new_item= [sku_id, itemName, stock, brand, category, supplierid]
-                        databaseTemp = {}
-                        # Add new item to temporary database to confirm to user
-                        databaseTemp[sku_id] = new_item
-                        # Show temporary database to user
-                        showAll(databaseTemp, header=["SKU_id", "Name", "Stock", "Brand", "Category", "Supplier_id"])
-                        saveData = integer_validation(f'''\n Do you want to save data? 
+                if status == 'Yes':      
+                    # Create a new item dictionary
+                    new_item= [sku_id, itemName, stock, brand, category, supplierid]
+                    databaseTemp = {}
+                    # Add new item to temporary database to confirm to user
+                    databaseTemp[sku_id] = new_item
+                    # Show temporary database to user
+                    showAll(databaseTemp, header=["SKU_id", "Name", "Stock", "Brand", "Category", "Supplier_id"])
+                    saveData = integer_validation(f'''\n Do you want to save data? 
     1. Yes
     2. No
     input:   ''', minval = 1, maxval = 2)
-                
-                        if saveData == 1:
-                            # Add new item to database
-                            database1[sku_id] = new_item
-                            print(f'\n Item with SKU id {sku_id} have added successfully.')
-                            break
-                        # Go back to Add function sub menu
-                        else:
-                            continue
-
-                    elif status == 'No':
+            
+                    if saveData == 1:
+                        # Add new item to database
+                        database1[sku_id] = new_item
+                        print(f'\n Item with SKU id {sku_id} have added successfully.')
                         break
+                    # Go back to Add function sub menu
+                    else:
+                        continue
+
+                elif status == 'No':
+                    break
 
         # Go back to main menu
         elif addData == 2:
@@ -373,31 +405,45 @@ def updateInfo(database):
 
             # If sku_id is in database
             if sku_id in database:
-                # Proceed to ask for updated details
-                itemName = alphaspace_validation('Enter item name: ')
-                stock = integer_validation('Enter stock quantity: ')
-                brand = alnumspace_validation('Enter brand name: ')
-                category = categoryselection()
-                supplier = integer_validation('Enter supplier id: ')
-
-                # Create a temporary update info dictionary
-                update_item= [sku_id, itemName, stock, brand, category, supplier]
-                updateDB = {}
-                updateDB[sku_id] = update_item
-                # Show and confirm to user the inputted details
-                showAll(updateDB)
-                askupdateData = integer_validation(f'''\n Do you want to update data? 
+                # Create temporary DB to show item details to user
+                wantUpdate = {}
+                wantUpdate[sku_id] = database [sku_id]
+                # Show and confirm to user if they want to continue updating
+                showAll(wantUpdate)
+                confirmUpdate = integer_validation(f'''\n Continue to update this data? 
     1. Yes
     2. No
     input:   ''', minval = 1, maxval = 2)
-                
-                if askupdateData == 1:
-                     # Add new item to database
-                    database[sku_id] = update_item
-                    print(f'\n Item with SKU id {sku_id} have been updated successfully.')
-                    break
-                # Go back to update info sub menu
-                else:
+                if confirmUpdate == 1:
+                    # Proceed to ask for updated details
+                    itemName = alphaspace_validation('Enter item name: ')
+                    stock = integer_validation('Enter stock quantity: ')
+                    brand = alnumspace_validation('Enter brand name: ')
+                    category = categoryselection()
+                    supplier = integer_validation('Enter supplier id: ')
+
+                    # Create a temporary update info dictionary
+                    update_item= [sku_id, itemName, stock, brand, category, supplier]
+                    updateDB = {}
+                    updateDB[sku_id] = update_item
+                    # Show and confirm to user the inputted details
+                    showAll(updateDB)
+                    askupdateData = integer_validation(f'''\n Do you want to update data? 
+    1. Yes
+    2. No
+    input:   ''', minval = 1, maxval = 2)
+                    
+                    if askupdateData == 1:
+                        # Add new item to database
+                        database[sku_id] = update_item
+                        print(f'\n Item with SKU id {sku_id} have been updated successfully.')
+                        break
+                    # Go back to update info sub menu
+                    else:
+                        continue
+
+                # If user chooses 'No', go back to sub menu
+                elif confirmUpdate == 2:
                     continue
 
         # Go back to main menu
@@ -551,30 +597,44 @@ Update Supplier Details?
 
             # If supplier id is in database,
             elif supp_id in database2:
-                # Ask for updated details
-                name = alphaspace_validation("Enter supplier's name: ")
-                contactPerson = alphaspace_validation("Enter contact person's name: ")
-                email = email_validation("Enter supplier's email: ")
-                country = alphaspace_validation("Enter supplier's country: ")
-
-                # Create a new update temporary dictionary
-                update_item= [supp_id, name, contactPerson, email, country]
-                updateDB = {}
-                updateDB[supp_id] = update_item
-                # Show and confirm updated details to user
-                showAll(updateDB, header =['Supplier_id', 'Name', 'Contact_Person', 'Email', 'Country'])
-                updateData = integer_validation(f'''\n Do you want to update data? 
+                # Create temporary supp DB to show item details to user
+                suppUpdate = {}
+                suppUpdate[supp_id] = database2[supp_id]
+                # Show and confirm to user if they want to continue updating supplier contact information
+                showAll(suppUpdate, header = ['Supplier_id', 'Name', 'Contact_Person', 'Email', 'Country'])
+                confirmSuppUpdate = integer_validation(f'''\n Continue to update this supplier contact information? 
     1. Yes
     2. No
     input:   ''', minval = 1, maxval = 2)
-                
-                # Add updated item to database
-                if updateData == 1:
-                    database2[supp_id] = update_item
-                    print(f'\n Supplier data with id {supp_id} have been updated successfully.')
-                    break
-                # Go back to supplier function
-                else:
+                if confirmSuppUpdate == 1:    
+                    # Ask for updated details
+                    name = alphaspace_validation("Enter supplier's name: ")
+                    contactPerson = alphaspace_validation("Enter contact person's name: ")
+                    email = email_validation("Enter supplier's email: ")
+                    country = alphaspace_validation("Enter supplier's country: ")
+
+                    # Create a new update temporary dictionary
+                    update_item= [supp_id, name, contactPerson, email, country]
+                    updateDB = {}
+                    updateDB[supp_id] = update_item
+                    # Show and confirm updated details to user
+                    showAll(updateDB, header =['Supplier_id', 'Name', 'Contact_Person', 'Email', 'Country'])
+                    updateData = integer_validation(f'''\n Do you want to update data? 
+        1. Yes
+        2. No
+        input:   ''', minval = 1, maxval = 2)
+                    
+                    # Add updated item to database
+                    if updateData == 1:
+                        database2[supp_id] = update_item
+                        print(f'\n Supplier data with id {supp_id} have been updated successfully.')
+                        break
+                    # Go back to supplier function
+                    else:
+                        continue
+
+                # If user chooses 'No', go back to sub menu
+                if confirmSuppUpdate == 2:
                     continue
 
         # Go back to main menu
@@ -688,3 +748,4 @@ def supplier(database1, database2):
         # Go back to main menu
         else:
             break
+
