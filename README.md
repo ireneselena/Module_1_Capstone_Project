@@ -6,19 +6,19 @@ The Warehouse Inventory Management System is designed to streamline and enhance 
 
 ### Key Features:
 
-1. **Show Warehouse Inventory**: View detailed inventory listings, including options to filter by product category or specific SKU_id.
+1. **Show Warehouse Inventory**: 
+- View detailed inventory listings with options to filter by product category or specific SKU_id.
+- Show stock information: Gain insights into overall stock levels and identify products currently in low stock, along with supplier details
 
 2. **Add Warehouse Inventory**: Easily register new items or update existing inventory details such as quantity and pricing.
 
-3. **Show Stock Information**: Gain insights into overall stock levels and identify products currently in low stock, along with supplier details.
+3. **Update Item Information Details**: Modify item information and ensure accurate database records.
 
-4. **Update Item Information Details**: Modify item information and ensure accurate database records.
+4. **Delete Item Inventory**: Remove outdated or unnecessary items from the inventory database.
 
-5. **Delete Item Inventory**: Remove outdated or unnecessary items from the inventory database.
+5. **Show Suppliers Contact Information**: Access essential supplier details including ID, company name, contact phone, email, and country.
 
-6. **Show Suppliers Contact Information**: Access essential supplier details including ID, company name, contact phone, email, and country.
-
-7. **Exit Program**: Terminate the application and return to the main operating system.
+6. **Exit Program**: Terminate the application and return to the main operating system.
 
 
 ## Installation
