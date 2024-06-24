@@ -225,7 +225,6 @@ def add(database1, database2):
                 # Redirect user to updateInfo function
                 if option == 1:
                     updateInfo(database1)
-                # Go back to Add database sub menu
                 else:
                     continue
 
@@ -237,11 +236,30 @@ def add(database1, database2):
                 stock = integer_validation('Enter stock quantity: ')
                 brand = alnumspace_validation('Enter brand name: ')
                 category = categoryselection()
+
+                # Validate if there are is already existing item
+                # Create checkDB database to keep database values to be check
+                duplicate_status = False
+                # Input sku_id, name, brand, category from original database into checkDB
+                for key, val in database1.items():
+                    dbItemName, dbBrand, dbCategory = val[1], val[3], val[4]
+                    # If data is found in database, show user the existing data
+                    if dbItemName == itemName and dbBrand == brand and dbCategory == category:
+                        print(f'\n Data already exist with SKU_id {key}, please try again!')
+                        showItem(database1, sku_id = key)
+                        duplicate_status = True
+                        break
+
+                if duplicate_status == True:
+                    continue
+
+                # If data has no duplicates, proceed with the function
+                # Continue by asking for supplierid
                 supplierid = integer_validation('Enter supplier id: ')
-                
+                        
                 # Check if supplier id already exist
                 if supplierid in database2:
-                     # Create a new item dictionary
+                    # Create a new item dictionary
                     new_item= [sku_id, itemName, stock, brand, category, supplierid]
                     databaseTemp = {}
                     # Add new item to temporary database to confirm to user
@@ -266,7 +284,7 @@ def add(database1, database2):
                 elif supplierid not in database2:
                     while True:
                         askuser = integer_validation(f'''\nSupplier id has not been registered, do you want to add supplier's contact information first?
-                                                     
+                                                            
     1. Yes
     2. No
     input:   ''', minval=1, maxval=2)
@@ -286,14 +304,14 @@ def add(database1, database2):
                             # Show and confirm to user about new supplier's details
                             showAll(databaseTemp, header =['Supplier_id', 'Name', 'Contact_Person', 'Email', 'Country'])
                             saveData = integer_validation(f'''\n Do you want to save data? 
-        1. Yes
-        2. No
-        input:   ''', minval = 1, maxval = 2)
+    1. Yes
+    2. No
+    input:   ''', minval = 1, maxval = 2)
                                 
                             # Add new supplier contact information to database
                             if saveData == 1:
                                 database2[supplierid] = new_supp
-                                print(f'\n Supplier with supplier id {supplierid} have beem added successfully.')
+                                print(f'\n Supplier with supplier id {supplierid} have been added successfully.')
                                 status = 'Yes'
                                 break
                             # Go back to supplier function
@@ -304,30 +322,30 @@ def add(database1, database2):
                         elif askuser == 2:
                             break
                         
-                if status == 'Yes':      
-                    # Create a new item dictionary
-                    new_item= [sku_id, itemName, stock, brand, category, supplierid]
-                    databaseTemp = {}
-                    # Add new item to temporary database to confirm to user
-                    databaseTemp[sku_id] = new_item
-                    # Show temporary database to user
-                    showAll(databaseTemp, header=["SKU_id", "Name", "Stock", "Brand", "Category", "Supplier_id"])
-                    saveData = integer_validation(f'''\n Do you want to save data? 
+                        if status == 'Yes':      
+                            # Create a new item dictionary
+                            new_item= [sku_id, itemName, stock, brand, category, supplierid]
+                            databaseTemp = {}
+                            # Add new item to temporary database to confirm to user
+                            databaseTemp[sku_id] = new_item
+                            # Show temporary database to user
+                            showAll(databaseTemp, header=["SKU_id", "Name", "Stock", "Brand", "Category", "Supplier_id"])
+                            saveData = integer_validation(f'''\n Do you want to save data? 
     1. Yes
     2. No
     input:   ''', minval = 1, maxval = 2)
             
-                    if saveData == 1:
-                        # Add new item to database
-                        database1[sku_id] = new_item
-                        print(f'\n Item with SKU id {sku_id} have added successfully.')
-                        break
-                    # Go back to Add function sub menu
-                    else:
-                        continue
+                            if saveData == 1:
+                                # Add new item to database
+                                database1[sku_id] = new_item
+                                print(f'\n Item with SKU id {sku_id} have added successfully.')
+                                break
+                            # Go back to Add function sub menu
+                            else:
+                                continue
 
-                elif status == 'No':
-                    break
+                        elif status == 'No':
+                            break
 
         # Go back to main menu
         elif addData == 2:
@@ -420,6 +438,26 @@ def updateInfo(database):
                     stock = integer_validation('Enter stock quantity: ')
                     brand = alnumspace_validation('Enter brand name: ')
                     category = categoryselection()
+
+                    # Validate if there are is already existing item
+                    # Create checkDB database to keep database values to be check
+                    duplicate_status = False
+                    # Input sku_id, name, brand, category from original database into checkDB
+                    for key, val in database.items():
+                        dbItemName, dbBrand, dbCategory = val[1], val[3], val[4]
+                        # If data is found in database, show user the existing data
+                        if dbItemName == itemName and dbBrand == brand and dbCategory == category:
+                            print(f'\n Data already exist with SKU_id {key}, please try again!')
+                            showItem(database, sku_id = key)
+                            duplicate_status = True
+                            break
+
+                    if duplicate_status == True:
+                        continue
+
+
+
+                    # Proceed to ask supplier info
                     supplier = integer_validation('Enter supplier id: ')
 
                     # Create a temporary update info dictionary
@@ -428,11 +466,11 @@ def updateInfo(database):
                     updateDB[sku_id] = update_item
                     # Show and confirm to user the inputted details
                     showAll(updateDB)
-                    askupdateData = integer_validation(f'''\n Do you want to update data? 
-    1. Yes
-    2. No
-    input:   ''', minval = 1, maxval = 2)
-                    
+                    askupdateData = integer_validation(f'''\nDo you want to update data? 
+1. Yes
+2. No
+input:   ''', minval = 1, maxval = 2)
+                
                     if askupdateData == 1:
                         # Add new item to database
                         database[sku_id] = update_item
@@ -440,7 +478,7 @@ def updateInfo(database):
                         break
                     # Go back to update info sub menu
                     else:
-                        continue
+                        break
 
                 # If user chooses 'No', go back to sub menu
                 elif confirmUpdate == 2:
@@ -547,6 +585,22 @@ def addsupplier(database2):
                     email = email_validation("Enter supplier's email: ")
                     country = alphaspace_validation("Enter supplier's country: ")
 
+                    # Validate if there is already existing supplier info
+                    # Create supp duplicate status
+                    supp_duplicate_status = False
+                    # Input sku_id, name, brand, category from original database into checkDB
+                    for key, val in database2.items():
+                        dbName, dbCP, dbEmail, dbCountry = val[1], val[2], val[3], val[4]
+                        # If supplier data is found in database, show user the existing data
+                        if dbName == name and dbCP == contactPerson and dbEmail == email and dbCountry == country:
+                            print(f'\n Supplier data already exist with Supp_id {key}, please try again!')
+                            showItem(database2, sku_id = key)
+                            supp_duplicate_status = True
+                            break
+
+                    if supp_duplicate_status == True:
+                        continue
+
                     # Create and add new supplier temporary dictionary
                     new_supp= [supplier_id, name, contactPerson, email, country]
                     databaseTemp = {}
@@ -612,6 +666,22 @@ Update Supplier Details?
                     contactPerson = alphaspace_validation("Enter contact person's name: ")
                     email = email_validation("Enter supplier's email: ")
                     country = alphaspace_validation("Enter supplier's country: ")
+
+                    # Validate if there is already existing supplier info
+                    # Create supp duplicate status
+                    supp_duplicate_status = False
+                    # Input sku_id, name, brand, category from original database into checkDB
+                    for key, val in database2.items():
+                        dbName, dbCP, dbEmail, dbCountry = val[1], val[2], val[3], val[4]
+                        # If supplier data is found in database, show user the existing data
+                        if dbName == name and dbCP == contactPerson and dbEmail == email and dbCountry == country:
+                            print(f'\n Supplier data already exist with Supp_id {key}, please try again!')
+                            showItem(database2, sku_id = key)
+                            supp_duplicate_status = True
+                            break
+
+                    if supp_duplicate_status == True:
+                        continue
 
                     # Create a new update temporary dictionary
                     update_item= [supp_id, name, contactPerson, email, country]
