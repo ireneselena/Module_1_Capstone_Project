@@ -493,7 +493,7 @@ input:   ''', minval = 1, maxval = 2)
 def delete(database):
 
     # Sub menu for Delete function
-    deletemenu = '''Delete Item
+    deletemenu = f'''\nDelete Item
     1. Delete an Item
     2. Back to Main Menu'''
 
@@ -505,31 +505,70 @@ def delete(database):
 
         # Proceed with Delete Function
         if deleteData == 1:
-            # Ask user for sku id
-            sku_id = alnum_validation('Please input SKU id of item you want to delete: ')
-            # When sku id is not in database, go back to Delete sub menu
-            if sku_id not in database:
-                print(f'\n Item does not exist, please try again!')
-                continue
+            # Create a condition where delete more is True
+            deleteMore = True
+            
+            # Create a new delete database to show item(s) that user wanted to delete
+            deleteTempDB = {}
 
-            # When sku id is in database, proceed to show inputted item in a temporary database
-            if sku_id in database:
-                deleteTemp = {}
-                deleteTemp[sku_id] = database[sku_id]
-                # Show and confirm item to delete to user
-                showAll(deleteTemp)
-                askdeleteData = integer_validation(f'''\n Do you want to delete data? 
-    1. Yes
-    2. No
-    input:   ''', minval = 1, maxval = 2)
-                # Proceed to delete intended item
-                if askdeleteData == 1:
-                    del database[sku_id]
-                    print(f'\n Item with SKU id {sku_id} have been deleted successfully.')
-                    break
-                # Go back to Delete sub menu
-                else:
+            # Create a looping condition when 'deleteMore' is True
+            while deleteMore == True:
+
+                # Ask user for sku id
+                sku_id = alnum_validation('Please input SKU id of item you want to delete: ')
+                # When sku id is not in database, go back to Delete sub menu
+                if sku_id not in database:
+                    print(f'\n Item does not exist, please try again!')
                     continue
+
+                # When sku id is in database, proceed to show inputted item in a temporary database
+                if sku_id in database:
+                    deleteTemp = {}
+                    deleteTemp[sku_id] = database[sku_id]
+                    # Show and confirm item to delete to user
+                    showAll(deleteTemp)
+                    askdeleteData = integer_validation(f'''\n Do you want to delete this data? 
+        1. Yes
+        2. No
+        input:   ''', minval = 1, maxval = 2)
+                    # Proceed with the function
+                    if askdeleteData == 1:
+                        deleteTempDB [sku_id] = database[sku_id]
+                        # Show user current items that they want to delete
+                        showAll(deleteTempDB)
+                        # Ask user if they want to delete more item
+                        delMoreMenu = f'''\nDo you want to delete more item?
+                        1. Yes
+                        2. No''' 
+                        print(delMoreMenu)
+                        # Ask for user input
+                        delMore = integer_validation("Please input the option you want to choose: ", minval=1, maxval=2)
+
+                        # If user want to delete more, then
+                        if delMore == 1:
+                            deleteMore == True
+                            continue
+                        
+                        # If user doesn't want to delete more items,
+                        # proceed with deleting confirmed item(s) from original database
+                        elif delMore == 2:
+                            deleteMore == False
+                            break
+
+                    # Go back to Delete sub menu
+                    else:
+                        continue
+
+            # Create a list to show deleted items
+            deleteList = []
+            # Delete confirmed item(s) from original database
+            for key in deleteTempDB :
+                del database[key]
+
+            for key, val in deleteTempDB.items():
+                deleteList.append(val[0])
+
+            print(f'\n item(s) with SKU id: {deleteList} have been deleted successfully.')
 
         # Go back to main menu
         elif deleteData == 2:
