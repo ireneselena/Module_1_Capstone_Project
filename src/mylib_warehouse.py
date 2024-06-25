@@ -55,7 +55,7 @@ def alnumspace_validation(title):
         if all(char.isalpha() or char.isspace() or char.isnumeric() for char in alnumspace):
             break
         else:
-            print("Please input only alphabets and spaces!")
+            print("Please input only alphabets, numbers,and spaces!")
     return alnumspace.title()
 
 
@@ -117,7 +117,7 @@ def show(database):
 
         # Show all warehouse inventory (Excluding supplier id column)
         if showData == 1:
-            # Show all data
+            # Show data
             showInvent = {}
             for key, val in database.items():
                 showInvent[key] = val[0:5]
@@ -131,7 +131,7 @@ def show(database):
 
         # Show warehouse inventory based on its category (Excluding supplier id column)
         elif showData == 2:
-            # Ask user for category
+            # Ask user for category selection
             category = categoryselection()
             # Display data in table format
             showCat(database, category)
@@ -455,8 +455,6 @@ def updateInfo(database):
                     if duplicate_status == True:
                         continue
 
-
-
                     # Proceed to ask supplier info
                     supplier = integer_validation('Enter supplier id: ')
 
@@ -467,9 +465,9 @@ def updateInfo(database):
                     # Show and confirm to user the inputted details
                     showAll(updateDB)
                     askupdateData = integer_validation(f'''\nDo you want to update data? 
-1. Yes
-2. No
-input:   ''', minval = 1, maxval = 2)
+    1. Yes
+    2. No
+    input:   ''', minval = 1, maxval = 2)
                 
                     if askupdateData == 1:
                         # Add new item to database
@@ -528,9 +526,9 @@ def delete(database):
                     # Show and confirm item to delete to user
                     showAll(deleteTemp)
                     askdeleteData = integer_validation(f'''\n Do you want to delete this data? 
-        1. Yes
-        2. No
-        input:   ''', minval = 1, maxval = 2)
+    1. Yes
+    2. No
+    input:   ''', minval = 1, maxval = 2)
                     # Proceed with the function
                     if askdeleteData == 1:
                         deleteTempDB [sku_id] = database[sku_id]
@@ -538,8 +536,8 @@ def delete(database):
                         showAll(deleteTempDB)
                         # Ask user if they want to delete more item
                         delMoreMenu = f'''\nDo you want to delete more item?
-                        1. Yes
-                        2. No''' 
+    1. Yes
+    2. No''' 
                         print(delMoreMenu)
                         # Ask for user input
                         delMore = integer_validation("Please input the option you want to choose: ", minval=1, maxval=2)
@@ -557,18 +555,40 @@ def delete(database):
 
                     # Go back to Delete sub menu
                     else:
-                        continue
+                        showAll(deleteTempDB)
+                        # Ask user if they want to delete more item
+                        delMoreMenu = f'''\nDo you want to delete more item?
+    1. Yes
+    2. No''' 
+                        print(delMoreMenu)
+                        # Ask for user input
+                        delMore = integer_validation("Please input the option you want to choose: ", minval=1, maxval=2)
 
-            # Create a list to show deleted items
-            deleteList = []
-            # Delete confirmed item(s) from original database
-            for key in deleteTempDB :
-                del database[key]
+                        # If user want to delete more, then
+                        if delMore == 1:
+                            deleteMore == True
+                            continue
+                        
+                        # If user doesn't want to delete more items,
+                        # proceed with deleting confirmed item(s) from original database
+                        elif delMore == 2:
+                            deleteMore == False
+                            break
 
-            for key, val in deleteTempDB.items():
-                deleteList.append(val[0])
+            # Create if function if deleteTempDB is empty or not
+            if deleteTempDB == {}:
+                continue 
+            else:
+                # Create a list to show deleted items
+                deleteList = []
+                # Delete confirmed item(s) from original database
+                for key in deleteTempDB :
+                    del database[key]
 
-            print(f'\n item(s) with SKU id: {deleteList} have been deleted successfully.')
+                for key, val in deleteTempDB.items():
+                    deleteList.append(val[0])
+
+                print(f'\n item(s) with SKU id: {deleteList} have been deleted successfully.')
 
         # Go back to main menu
         elif deleteData == 2:
@@ -729,9 +749,9 @@ Update Supplier Details?
                     # Show and confirm updated details to user
                     showAll(updateDB, header =['Supplier_id', 'Name', 'Contact_Person', 'Email', 'Country'])
                     updateData = integer_validation(f'''\n Do you want to update data? 
-        1. Yes
-        2. No
-        input:   ''', minval = 1, maxval = 2)
+    1. Yes
+    2. No
+    input:   ''', minval = 1, maxval = 2)
                     
                     # Add updated item to database
                     if updateData == 1:
